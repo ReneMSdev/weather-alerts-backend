@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src", // source TS files
+    "outDir": "./dist", // compiled JS files
+
+    // Environment Settings
+    "module": "CommonJS", // CommonJS is the default module system for Node.js
+    "target": "ES2022",
+    "lib": ["ESNext"], // ESNext is the latest version of the JavaScript standard
+    "types": ["node"], // types for Node.js
+
+    // Other Outputs
+    "sourceMap": true, // source maps for debugging TS iles
+    "declaration": true, // create .d.ts files for each module
+    "declarationMap": true, // create source maps for .d.ts files
+
+    // Type Safety
+    "strict": true, // enable all strict type-checking options
+    "noUnusedLocals": true, // warn if local variables are declared but not used
+    "noUncheckedIndexedAccess": true, // warn if indexed access types are not checked
+    // Require correct types for optional properties ex: { name?: string } -> { name: string }
+    "exactOptionalPropertyTypes": true,
+
+    // Build & Module Options
+    "skipLibCheck": true, // Skip checking .d.ts files (improves build performance)
+    "isolatedModules": true, // Ensure each file is treated as its own module
+    "moduleResolution": "Node", // Resolve modules using Node's module resolution strategy
+    "resolveJsonModule": true, // Allow importing JSON files as modules
+
+    // Optional: Removes warnings when importing CJS modules like `express`
+    "esModuleInterop": true // Allow importing CommonJS modules as ES modules
+  },
+  "include": ["src"], // include source files in the build
+  "exclude": ["node_modules", "dist"] // exclude node_modules and dist from the build
+}

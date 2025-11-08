@@ -7,21 +7,41 @@ import axios from 'axios'
 const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY as string
 
-export async function geocodeCity(city: string): Promise<{ lat: number; lng: number }> {
+export interface GeocodeResult {
+  lat: number
+  lng: number
+  city: string
+  state: string
+}
+
+export async function geocodeCity(cityName: string): Promise<GeocodeResult> {
   return axios
     .get(GOOGLE_GEOCODE_URL, {
       params: {
-        address: city,
+        address: cityName,
         key: GOOGLE_API_KEY,
       },
     })
     .then((response) => {
       const result = response.data.results[0]
       if (!result) {
-        throw new Error(`Unable to geocode city ${city}`)
+        throw new Error(`Unable to geocode city ${cityName}`)
       }
+
+      const components = result.address_components
+
+      const city =
+        components.find((c: any) => c.types.includes('locality'))?.long_name ||
+        components.find((c: any) => c.types.includes('postal_town'))?.long_name ||
+        cityName // fallback
+
+      const state =
+        components.find((c: any) => c.types.includes('administrative_area_level_1'))?.short_name ||
+        ''
+
       const { lat, lng } = result.geometry.location
-      return { lat, lng }
+
+      return { lat, lng, city, state }
     })
     .catch((error: any) => {
       if (axios.isAxiosError(error) && error.response) {

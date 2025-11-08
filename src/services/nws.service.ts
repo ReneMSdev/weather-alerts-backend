@@ -1,10 +1,18 @@
 // National Weather Service API service for fetching weather data
 // NWS API Wrapper
 import axios from 'axios'
-import { geocodeCity } from './geo.service'
+// import { geocodeCity } from './geo.service'
 
 const NWS_API_URL = 'https://api.weather.gov/points'
 const USER_AGENT = `weather-alerts-backend (${process.env.CONTACT_EMAIL})`
+
+// Mock location for testing
+const MOCK_LOCATION = {
+  lat: 39.7392358,
+  lng: -104.990251,
+  city: 'Denver',
+  state: 'TX',
+}
 
 export interface WeatherPeriod {
   number: number // 1 is today/tonight
@@ -22,20 +30,25 @@ export interface WeatherPeriod {
 
 export interface WeatherData {
   city: string
-  // State optional
+  state: string
   coordinates: { lat: number; lng: number }
   forecastUrl: string
   periods: WeatherPeriod[]
 }
 
 // Main function to fetch weather data for a city
-export async function fetchWeather(city: string): Promise<WeatherData> {
-  const { lat, lng } = await geocodeCity(city)
+export async function fetchWeather(cityName: string): Promise<WeatherData> {
+  // Real geolocation service
+  // const { lat, lng, city, state } = await geocodeCity(cityName)
+  // Mock geolocation service
+  const { lat, lng, city, state } = MOCK_LOCATION
+
   const forecastUrl = await getForecastUrl(lat, lng)
   const periods = await fetchNwsForecast(forecastUrl)
 
   return {
     city,
+    state,
     coordinates: { lat, lng },
     forecastUrl,
     periods,
@@ -45,7 +58,7 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
 // Helper function to get the forecast URL from the NWS API
 async function getForecastUrl(lat: number, lng: number): Promise<string> {
   return axios
-    .get(`${NWS_API_URL}?latitude=${lat}&longitude=${lng}`)
+    .get(`${NWS_API_URL}/${lat},${lng}`)
     .then((response) => {
       const properties = response.data.properties
       if (!properties) {

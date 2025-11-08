@@ -1,11 +1,10 @@
 import { Request, Response } from 'express'
-import { WeatherData } from '../types/weather'
 
 export const getWeatherByCity = async (req: Request, res: Response) => {
   const { city } = req.params
 
   // Placeholder logic
-  const mockWeatherData: WeatherData = {
+  const mockWeatherData: any = {
     city: city ?? 'Unknown',
     current: {
       temp: 75,

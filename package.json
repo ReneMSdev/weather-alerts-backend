@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "Rene Maxey-Salomone",
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "drizzle-kit": "^0.31.6",
     "drizzle-orm": "^0.44.7",
     "express": "^5.1.0",
@@ -18,6 +22,7 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/ioredis": "^4.28.10",
     "@types/node": "^24.10.0",

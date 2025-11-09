@@ -2,57 +2,38 @@
 // NWS API Wrapper
 import axios from 'axios'
 // import { geocodeCity } from './geo.service'
+import { WeatherPeriod, TransformedWeatherData } from '../types/weather'
+import { transformNwsToWeatherData } from './transformWeather'
 
 const NWS_API_URL = 'https://api.weather.gov/points'
 const USER_AGENT = `weather-alerts-backend (${process.env.CONTACT_EMAIL})`
 
-// Mock location for testing
-const MOCK_LOCATION = {
-  lat: 39.7392358,
-  lng: -104.990251,
-  city: 'Denver',
-  state: 'TX',
+// Mock locations for testing
+// ---------------------------
+// const MOCK_LOCATION = {
+//   lat: 39.7392358,
+//   lng: -104.990251,
+//   city: 'Denver',
+//   state: 'TX',
+// }
+const MOCK_LOCATION_COLUMBIA = {
+  lat: 38.951561,
+  lng: -92.328636,
+  city: 'Columbia',
+  state: 'MO',
 }
-
-export interface WeatherPeriod {
-  number: number // 1 is today/tonight
-  name: string // "Today"/"Tonight"/"Monday"/"Monday Night"
-  isDaytime: boolean
-  temp: number
-  tempUnit: string // "F"
-  precipitation: number | null
-  windSpeed: string
-  windDirection: string
-  icon: string
-  shortForecast: string
-  detailedForecast: string
-}
-
-export interface WeatherData {
-  city: string
-  state: string
-  coordinates: { lat: number; lng: number }
-  forecastUrl: string
-  periods: WeatherPeriod[]
-}
+// ---------------------------
 
 // Main function to fetch weather data for a city
-export async function fetchWeather(cityName: string): Promise<WeatherData> {
-  // Real geolocation service
+export async function fetchWeather(cityName: string): Promise<TransformedWeatherData> {
+  // ✅ Use real geocoding OR mock location
   // const { lat, lng, city, state } = await geocodeCity(cityName)
-  // Mock geolocation service
-  const { lat, lng, city, state } = MOCK_LOCATION
+  const { lat, lng, city, state } = MOCK_LOCATION_COLUMBIA
 
   const forecastUrl = await getForecastUrl(lat, lng)
   const periods = await fetchNwsForecast(forecastUrl)
 
-  return {
-    city,
-    state,
-    coordinates: { lat, lng },
-    forecastUrl,
-    periods,
-  }
+  return transformNwsToWeatherData(city, state, { lat, lng }, periods)
 }
 
 // Helper function to get the forecast URL from the NWS API

@@ -4,6 +4,7 @@ import {
   WeatherPeriod,
   TransformedWeatherData,
 } from '../types/weather'
+import { iconFromShortDescription } from './icon.service'
 
 export function transformNwsToWeatherData(
   city: string,
@@ -29,7 +30,7 @@ export function transformNwsToWeatherData(
     precipitation: nowPeriod?.precipitation ?? null,
     windSpeed: nowPeriod?.windSpeed ?? '',
     windDirection: nowPeriod?.windDirection ?? '',
-    icon: nowPeriod?.icon ?? '',
+    icon: iconFromShortDescription(nowPeriod?.shortForecast ?? ''),
     shortDescription: nowPeriod?.shortForecast ?? '',
     detailedDescription: nowPeriod?.detailedForecast ?? '',
   }
@@ -56,7 +57,7 @@ export function transformNwsToWeatherData(
           high: p.isDaytime ? p.temp : null,
           low: !p.isDaytime ? p.temp : null,
           description: p.shortForecast ?? '',
-          icon: p.icon ?? '',
+          icon: iconFromShortDescription(p.shortForecast ?? ''),
         })
       }
 

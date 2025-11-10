@@ -25,6 +25,7 @@ export interface CurrentWeather {
   high: number | null
   low: number | null
   precipitation: number | null
+  // TODO: humidity is in hourly forecast, not current
   windSpeed: string
   windDirection: string
   icon: string

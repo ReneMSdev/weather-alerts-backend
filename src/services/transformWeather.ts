@@ -63,14 +63,24 @@ export function transformNwsToWeatherData(
       return acc
     }, [])
 
+  const todayEntry: DailyForecast = {
+    day: 'Today',
+    high: current.high,
+    low: current.low,
+    description: current.shortDescription,
+    icon: current.icon,
+  }
+
   // Fill in missing high/low with 0 to satisfy types
-  const finalizedForecast = dailyForecast.map((d) => ({
+  const futureForecast = dailyForecast.map((d) => ({
     day: d.day,
     high: d.high ?? 0,
     low: d.low ?? 0,
     icon: d.icon ?? '',
     description: d.description,
   }))
+
+  const finalizedForecast = [todayEntry, ...futureForecast]
 
   return {
     city,

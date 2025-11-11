@@ -4,8 +4,10 @@ import axios from 'axios'
 // import { geocodeCity } from './geo.service'
 import { WeatherPeriod, TransformedWeatherData } from '../types/weather'
 import { transformNwsToWeatherData } from './transformWeather'
+import { getOrCreateLocation } from './location.service'
 
 const NWS_API_URL = 'https://api.weather.gov/points'
+const NWS_GRIDPOINTS_API_URL = 'https://api.weather.gov/gridpoints'
 const USER_AGENT = `weather-alerts-backend (${process.env.CONTACT_EMAIL})`
 
 // Mock locations for testing
@@ -16,28 +18,40 @@ const USER_AGENT = `weather-alerts-backend (${process.env.CONTACT_EMAIL})`
 //   city: 'Denver',
 //   state: 'TX',
 // }
-const MOCK_LOCATION_COLUMBIA = {
-  lat: 38.951561,
-  lng: -92.328636,
-  city: 'Columbia',
-  state: 'MO',
-}
+// const MOCK_LOCATION_COLUMBIA = {
+//   lat: 38.951561,
+//   lng: -92.328636,
+//   city: 'Columbia',
+//   state: 'MO',
+// }
 // ---------------------------
 
 // Main function to fetch weather data for a city
 export async function fetchWeather(cityName: string): Promise<TransformedWeatherData> {
-  // ✅ Use real geocoding OR mock location
-  // const { lat, lng, city, state } = await geocodeCity(cityName)
-  const { lat, lng, city, state } = MOCK_LOCATION_COLUMBIA
+  // 1. Get or create the location
+  const location = await getOrCreateLocation(cityName)
 
-  const forecastUrl = await getForecastUrl(lat, lng)
+  // 2. Get the forecast URL
+  const forecastUrl =
+    await `${NWS_GRIDPOINTS_API_URL}/${location.grid_id}/${location.grid_x},${location.grid_y}/forecast`
+
+  // 3. Fetch the forecast data
   const periods = await fetchNwsForecast(forecastUrl)
 
-  return transformNwsToWeatherData(city, state, { lat, lng }, periods)
+  // 4. Transform the forecast data
+  return transformNwsToWeatherData(
+    location.city,
+    location.state,
+    { lat: Number(location.lat), lng: Number(location.lon) },
+    periods
+  )
 }
 
-// Helper function to get the forecast URL from the NWS API
-async function getForecastUrl(lat: number, lng: number): Promise<string> {
+// Helper function to get the forecast URL from the NWS points API
+export async function getForecastUrlAndGrid(
+  lat: number,
+  lng: number
+): Promise<{ forecastUrl: string; gridId: string; gridX: number; gridY: number }> {
   return axios
     .get(`${NWS_API_URL}/${lat},${lng}`)
     .then((response) => {
@@ -45,8 +59,12 @@ async function getForecastUrl(lat: number, lng: number): Promise<string> {
       if (!properties) {
         throw new Error('No properties found in NWS response')
       }
-      const forecastURL = properties.forecast
-      return forecastURL
+      return {
+        forecastUrl: properties.forecast,
+        gridId: properties.gridId,
+        gridX: properties.gridX,
+        gridY: properties.gridY,
+      }
     })
     .catch((error) => {
       console.error('Error fetching forecast URL:', error.message)

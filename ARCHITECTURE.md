@@ -131,11 +131,11 @@ This document provides a **high-level overview** of the structure, purpose, and 
 ## ❗ Remaining Core Tasks for MVP
 
 - [x] ✅ Set up Express app and first route in `app.ts`
-- [ ] 🔗 Add Drizzle ORM and initialize database in `db/client.ts`
+- [x] 🔗 Add Drizzle ORM and initialize database in `db/client.ts`
 - [x] 🌤️ Implement basic weather fetch logic using `nws.service.ts`
 - [x] 📡 Build an endpoint to fetch weather by city in `weather.routes.ts`
 - [ ] 🗄️ Add Drizzle schema and migration for device storage
-- [ ] 🧪 Test a full `/weather/:city` request-response cycle
+- [x] 🧪 Test a full `/weather/:city` request-response cycle
 
 ---
 

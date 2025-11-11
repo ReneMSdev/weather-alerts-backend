@@ -76,20 +76,13 @@ export async function getOrCreateLocation(rawCityId: string): Promise<LocationRe
 
   // Step 1: Check existing record
   const existing = await findLocation(cityId)
-  if (existing) {
-    console.log('Location already exists, returning existing record')
-    return existing
-  }
+  if (existing) return existing
 
   // Step 2: Geocode to get lat, lon, city, state
   const { lat, lng: lon, city, state } = await geocodeCity(cityId)
 
-  console.log('Geocoded location, fetching NWS grid office info')
-
   // Step 3: Fetch NWS grid office info
   const { gridId, gridX, gridY } = await getForecastUrlAndGrid(lat, lon)
-
-  console.log('Inserting location into database')
 
   // Step 4: Insert and return
   return await insertLocation({

@@ -10,22 +10,6 @@ const NWS_API_URL = 'https://api.weather.gov/points'
 const NWS_GRIDPOINTS_API_URL = 'https://api.weather.gov/gridpoints'
 const USER_AGENT = `weather-alerts-backend (${process.env.CONTACT_EMAIL})`
 
-// Mock locations for testing
-// ---------------------------
-// const MOCK_LOCATION = {
-//   lat: 39.7392358,
-//   lng: -104.990251,
-//   city: 'Denver',
-//   state: 'TX',
-// }
-// const MOCK_LOCATION_COLUMBIA = {
-//   lat: 38.951561,
-//   lng: -92.328636,
-//   city: 'Columbia',
-//   state: 'MO',
-// }
-// ---------------------------
-
 // Main function to fetch weather data for a city
 export async function fetchWeather(cityName: string): Promise<TransformedWeatherData> {
   // 1. Get or create the location

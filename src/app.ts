@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import weatherRoutes from './routes/weather.routes'
+import deviceRoutes from './routes/device.routes'
 
 // Create Express app
 const app = express()
@@ -14,11 +15,13 @@ app.get('/', (req, res) => {
   res.send('🌤️ Weather Alerts API is running!!')
 })
 
-// TODO: Add routes like:
-// app.use('/weather', weatherRoutes)
+// Weather routes
 app.use('/weather', weatherRoutes)
 
-// app.use('/device', deviceRoutes)
+// Device routes
+app.use('/device', deviceRoutes)
+
+// Alerts routes
 // app.use('/alerts', alertsRoutes)
 
 export default app

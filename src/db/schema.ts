@@ -28,6 +28,7 @@ export const devices = pgTable('devices', {
   device_id: varchar('device_id', { length: 36 }).notNull().unique(),
   // user_id: varchar('user_id', { length: 36 }).unique(),
   platform: varchar('platform', { length: 10 }),
+  os_version: varchar('os_version', { length: 50 }),
   push_token: text('push_token'),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),

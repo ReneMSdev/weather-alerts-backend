@@ -11,4 +11,8 @@ export default defineConfig({
     // Consider enabling full verification (rejectUnauthorized: true) in production for better security.
     ssl: { rejectUnauthorized: false },
   },
+  migrations: {
+    table: '__drizzle_migrations',
+    schema: 'public',
+  },
 })

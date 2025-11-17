@@ -138,5 +138,3 @@ This document provides a **high-level overview** of the structure, purpose, and 
 - [x] 🧪 Test a full `/weather/:city` request-response cycle
 
 ---
-
-> This file should help align development priorities, especially during early MVP work or onboarding new contributors.

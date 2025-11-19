@@ -68,7 +68,7 @@ router.post(
         sessionToken: sessionToken,
         includedPrimaryTypes: ['(cities)'], // restrict to cities
         languageCode: 'en',
-        regionCode: 'US',
+        includedRegionCodes: 'US',
       }
 
       const response = await axios.post(

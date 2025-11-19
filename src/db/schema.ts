@@ -10,6 +10,9 @@ export const locations = pgTable('locations', {
   city: varchar('city', { length: 100 }).notNull(),
   state: varchar('state', { length: 2 }).notNull(),
 
+  // Google Place ID
+  place_id: varchar('place_id', { length: 100 }).unique(),
+
   // Coordinates
   lat: decimal('lat', { precision: 8, scale: 5 }).notNull(),
   lon: decimal('lon', { precision: 8, scale: 5 }).notNull(),

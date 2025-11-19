@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import weatherRoutes from './routes/weather.routes'
 import deviceRoutes from './routes/device.routes'
+import autocompleteRoutes from './routes/autocomplete.routes'
 
 // Create Express app
 const app = express()
@@ -20,6 +21,9 @@ app.use('/weather', weatherRoutes)
 
 // Device routes
 app.use('/device', deviceRoutes)
+
+// Autocomplete route
+app.use('/autocomplete', autocompleteRoutes)
 
 // Alerts routes
 // app.use('/alerts', alertsRoutes)

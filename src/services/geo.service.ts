@@ -5,7 +5,7 @@
 import axios from 'axios'
 
 const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY as string
+const GOOGLE_API_KEY = process.env.GOOGLE_GEOCODING_API_KEY as string
 
 export interface GeocodeResult {
   lat: number

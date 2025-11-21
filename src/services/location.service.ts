@@ -17,6 +17,8 @@ export interface LocationRecord {
   grid_x: number
   grid_y: number
   created_at: string
+  place_id: string | null
+  timezone: string | null
 }
 
 /**

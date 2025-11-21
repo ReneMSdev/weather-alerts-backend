@@ -58,6 +58,8 @@ export async function insertLocation(data: {
   grid_id: string
   grid_x: number
   grid_y: number
+  place_id: string
+  timezone: string
 }): Promise<LocationRecord> {
   const inserted = await db.insert(locations).values(data).returning()
   if (!inserted[0]) throw new Error('Failed to insert location')
@@ -79,10 +81,10 @@ export async function getOrCreateLocation(rawCityId: string): Promise<LocationRe
   if (existing) return existing
 
   // Step 2: Geocode to get lat, lon, city, state
-  const { lat, lng: lon, city, state } = await geocodeCity(cityId)
+  const { lat, lng: lon, city, state, placeId } = await geocodeCity(cityId)
 
   // Step 3: Fetch NWS grid office info
-  const { gridId, gridX, gridY } = await getForecastUrlAndGrid(lat, lon)
+  const { gridId, gridX, gridY, timezone } = await getForecastUrlAndGrid(lat, lon)
 
   // Step 4: Insert and return
   return await insertLocation({
@@ -94,5 +96,7 @@ export async function getOrCreateLocation(rawCityId: string): Promise<LocationRe
     grid_id: gridId,
     grid_x: gridX,
     grid_y: gridY,
+    place_id: placeId,
+    timezone,
   })
 }

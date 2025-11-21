@@ -31,23 +31,30 @@ export async function fetchWeather(cityName: string): Promise<TransformedWeather
   )
 }
 
+// Expected return for getForecastUrlAndGrid
+interface NwsGridInfo {
+  forecastUrl: string
+  gridId: string
+  gridX: number
+  gridY: number
+  timezone: string
+}
+
 // Helper function to get the forecast URL from the NWS points API
-export async function getForecastUrlAndGrid(
-  lat: number,
-  lng: number
-): Promise<{ forecastUrl: string; gridId: string; gridX: number; gridY: number }> {
+export async function getForecastUrlAndGrid(lat: number, lng: number): Promise<NwsGridInfo> {
   return axios
     .get(`${NWS_API_URL}/${lat},${lng}`)
     .then((response) => {
-      const properties = response.data.properties
-      if (!properties) {
+      const props = response.data.properties
+      if (!props) {
         throw new Error('No properties found in NWS response')
       }
       return {
-        forecastUrl: properties.forecast,
-        gridId: properties.gridId,
-        gridX: properties.gridX,
-        gridY: properties.gridY,
+        forecastUrl: props.forecast,
+        gridId: props.gridId,
+        gridX: props.gridX,
+        gridY: props.gridY,
+        timezone: props.timeZone,
       }
     })
     .catch((error) => {

@@ -12,6 +12,7 @@ export interface GeocodeResult {
   lng: number
   city: string
   state: string
+  placeId: string
 }
 
 export async function geocodeCity(cityName: string): Promise<GeocodeResult> {
@@ -40,8 +41,9 @@ export async function geocodeCity(cityName: string): Promise<GeocodeResult> {
         ''
 
       const { lat, lng } = result.geometry.location
+      const placeId = result.place_id
 
-      return { lat, lng, city, state }
+      return { lat, lng, city, state, placeId }
     })
     .catch((error: any) => {
       if (axios.isAxiosError(error) && error.response) {

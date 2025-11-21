@@ -22,6 +22,9 @@ export const locations = pgTable('locations', {
   grid_x: integer('grid_x').notNull(),
   grid_y: integer('grid_y').notNull(),
 
+  // Timezone
+  timezone: varchar('timezone', { length: 50 }),
+
   // Timestamps
   created_at: timestamp('created_at').defaultNow().notNull(),
 })

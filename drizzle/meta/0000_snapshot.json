@@ -1,9 +1,141 @@
 {
-  "id": "16095edc-d010-4fb6-a640-a5f953349547",
+  "id": "d66ada2a-5571-47da-9528-86e1bde5ca95",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.device_locations": {
+      "name": "device_locations",
+      "schema": "",
+      "columns": {
+        "device_id_fk": {
+          "name": "device_id_fk",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location_id_fk": {
+          "name": "location_id_fk",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "device_locations_device_id_fk_devices_id_fk": {
+          "name": "device_locations_device_id_fk_devices_id_fk",
+          "tableFrom": "device_locations",
+          "tableTo": "devices",
+          "columnsFrom": [
+            "device_id_fk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "device_locations_location_id_fk_locations_id_fk": {
+          "name": "device_locations_location_id_fk_locations_id_fk",
+          "tableFrom": "device_locations",
+          "tableTo": "locations",
+          "columnsFrom": [
+            "location_id_fk"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "device_locations_device_id_fk_location_id_fk_pk": {
+          "name": "device_locations_device_id_fk_location_id_fk_pk",
+          "columns": [
+            "device_id_fk",
+            "location_id_fk"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.devices": {
+      "name": "devices",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "platform": {
+          "name": "platform",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "os_version": {
+          "name": "os_version",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "push_token": {
+          "name": "push_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "devices_device_id_unique": {
+          "name": "devices_device_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "device_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.locations": {
       "name": "locations",
       "schema": "",
@@ -14,8 +146,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "city_name": {
-          "name": "city_name",
+        "city_id": {
+          "name": "city_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city": {
+          "name": "city",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
@@ -25,6 +163,12 @@
           "type": "varchar(2)",
           "primaryKey": false,
           "notNull": true
+        },
+        "place_id": {
+          "name": "place_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
         },
         "lat": {
           "name": "lat",
@@ -56,6 +200,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "timezone": {
+          "name": "timezone",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -67,7 +217,22 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "locations_city_id_unique": {
+          "name": "locations_city_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "city_id"
+          ]
+        },
+        "locations_place_id_unique": {
+          "name": "locations_place_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "place_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

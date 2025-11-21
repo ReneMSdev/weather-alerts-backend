@@ -21,6 +21,7 @@ app.use('/weather', weatherRoutes)
 
 // Device routes
 app.use('/device', deviceRoutes)
+app.use('/devices', deviceRoutes)
 
 // Autocomplete route
 app.use('/autocomplete', autocompleteRoutes)

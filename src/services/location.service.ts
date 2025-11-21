@@ -1,3 +1,5 @@
+// src/services/location.service.ts
+// Service for location operations
 import { db } from '../db/client'
 import { locations } from '../db/schema'
 import { eq } from 'drizzle-orm'

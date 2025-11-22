@@ -3,8 +3,8 @@
 import { Request, Response } from 'express'
 import { db } from '../db/client'
 import { devices, devices_to_locations } from '../db/schema'
-import { eq } from 'drizzle-orm'
-import { getOrCreateLocation, LocationRecord } from '../services/location.service'
+import { eq, and } from 'drizzle-orm'
+import { getOrCreateLocation, getLocation, LocationRecord } from '../services/location.service'
 
 export const registerDevice = async (req: Request, res: Response) => {
   try {
@@ -72,5 +72,38 @@ export const addDeviceLocation = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error adding location to device:', error)
     res.status(500).json({ error: 'Failed to add location to device.' })
+  }
+}
+
+export const removeDeviceLocation = async (req: Request, res: Response) => {
+  try {
+    const { deviceId, cityId } = req.params
+
+    if (!deviceId) return res.status(400).json({ error: 'Device ID is required' })
+    if (!cityId) return res.status(400).json({ error: 'City ID is required' })
+
+    //  Fetch device
+    const deviceResult = await db.select().from(devices).where(eq(devices.device_id, deviceId))
+    const device = deviceResult[0]
+    if (!device) return res.status(404).json({ error: 'Device not found' })
+
+    // Fetch location
+    const location: LocationRecord | null = await getLocation(cityId)
+    if (!location) return res.status(404).json({ error: 'Location not found.' })
+
+    // Delete row from devices_to_locations
+    await db
+      .delete(devices_to_locations)
+      .where(
+        and(
+          eq(devices_to_locations.device_id_fk, device.id),
+          eq(devices_to_locations.location_id_fk, location.id)
+        )
+      )
+
+    res.sendStatus(204)
+  } catch (error: any) {
+    console.error('Error removing location from device:', error)
+    res.status(500).json({ error: 'Failed to remove location from device.' })
   }
 }

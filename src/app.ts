@@ -20,7 +20,6 @@ app.get('/', (req, res) => {
 app.use('/weather', weatherRoutes)
 
 // Device routes
-app.use('/device', deviceRoutes)
 app.use('/devices', deviceRoutes)
 
 // Autocomplete route

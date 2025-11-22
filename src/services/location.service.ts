@@ -39,7 +39,7 @@ export function normalizeCityId(raw: string): string {
 /**
  * Fetch a location from the DB by city_id
  */
-export async function findLocation(cityId: string): Promise<LocationRecord | null> {
+export async function getLocation(cityId: string): Promise<LocationRecord | null> {
   const result = await db.select().from(locations).where(eq(locations.city_id, cityId))
   if (!result[0]) return null
 
@@ -81,7 +81,7 @@ export async function getOrCreateLocation(rawCityId: string): Promise<LocationRe
   const cityId = normalizeCityId(rawCityId)
 
   // Step 1: Check existing record
-  const existing = await findLocation(cityId)
+  const existing = await getLocation(cityId)
   if (existing) return existing
 
   // Step 2: Geocode to get lat, lon, city, state

@@ -2,10 +2,11 @@
 // Controller for device registration and management
 import { Request, Response } from 'express'
 import { db } from '../db/client'
-import { devices, devices_to_locations } from '../db/schema'
+import { devices, devices_to_locations, locations } from '../db/schema'
 import { eq, and } from 'drizzle-orm'
 import { getOrCreateLocation, getLocation, LocationRecord } from '../services/location.service'
 
+// Register or return existing device
 export const registerDevice = async (req: Request, res: Response) => {
   try {
     const { deviceId, platform, osVersion, pushToken } = req.body
@@ -38,6 +39,7 @@ export const registerDevice = async (req: Request, res: Response) => {
   }
 }
 
+// Add location to a device
 export const addDeviceLocation = async (req: Request, res: Response) => {
   try {
     const { deviceId } = req.params
@@ -75,6 +77,7 @@ export const addDeviceLocation = async (req: Request, res: Response) => {
   }
 }
 
+// Remove location from a device
 export const removeDeviceLocation = async (req: Request, res: Response) => {
   try {
     const { deviceId, cityId } = req.params
@@ -105,5 +108,37 @@ export const removeDeviceLocation = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error removing location from device:', error)
     res.status(500).json({ error: 'Failed to remove location from device.' })
+  }
+}
+
+// Get list of locations for a device
+export const getDeviceLocations = async (req: Request, res: Response) => {
+  try {
+    const { deviceId } = req.params
+    if (!deviceId) return res.status(400).json({ error: 'Device ID is required' })
+
+    // Fetch device
+    const deviceResult = await db.select().from(devices).where(eq(devices.device_id, deviceId))
+    const device = deviceResult[0]
+    if (!device) return res.status(404).json({ error: 'Device not found' })
+
+    // Fetch all locations for device
+    const locationRows = await db
+      .select({
+        city_id: locations.city_id,
+        city: locations.city,
+        state: locations.state,
+        lat: locations.lat,
+        lon: locations.lon,
+        timezone: locations.timezone,
+      })
+      .from(devices_to_locations)
+      .innerJoin(locations, eq(devices_to_locations.location_id_fk, locations.id))
+      .where(eq(devices_to_locations.device_id_fk, device.id))
+
+    res.json({ locations: locationRows })
+  } catch (error: any) {
+    console.error('Error fetching device locations:', error)
+    res.status(500).json({ error: 'Failed to fetch device locations.' })
   }
 }

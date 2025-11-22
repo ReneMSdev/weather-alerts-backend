@@ -5,6 +5,7 @@ import {
   registerDevice,
   addDeviceLocation,
   removeDeviceLocation,
+  getDeviceLocations,
 } from '../controllers/device.controller'
 
 const router = Router()
@@ -17,5 +18,8 @@ router.post('/:deviceId/locations', addDeviceLocation)
 
 // Remove a location from a device
 router.delete('/:deviceId/locations/:cityId', removeDeviceLocation)
+
+// Get list of locations for a device
+router.get('/:deviceId/locations', getDeviceLocations)
 
 export default router
